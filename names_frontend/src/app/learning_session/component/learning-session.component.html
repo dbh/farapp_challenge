@@ -1,0 +1,70 @@
+<div class="container">
+  <h2 class="page-title">Learning Sessions</h2>
+  <div class="panel panel-default">
+    <div class="panel-heading">Create Learning Session</div>
+    <div class="panel-body">
+    <form #learningSessionForm="ngForm" (ngSubmit)="createLearningSession(learningSessionForm)" novalidate>
+
+      <div class="form-group">
+
+
+        <input type="text" id="name" placeholder="Name" required name="name"
+          [(ngModel)]="newLearningSession.name" #title="ngModel" class="form-control-sm">
+        <input type="text" id="email" class="form-control" placeholder="Email" required name="email"
+          [(ngModel)]="newLearningSession.startPage" #title="ngModel" class="form-control-sm">
+        <input type="text" id="phone" class="form-control-sm" placeholder="Phone" name="phone" [(ngModel)]="newLearningSession.endPage"
+          #title="ngModel">
+        <div *ngIf="name.errors && name.dirty" class="alert alert-danger">
+          <div [hidden]="!name.errors.required">
+            Title is required.
+          </div>
+        </div>
+        <input type="submit" id="submit" value="Submit" class="btn btn-primary"/>
+      </div>
+    </form>
+    </div>
+  </div>
+
+
+  <div *ngIf="editing">
+    <app-learning-session-detail [learningSession]="editingLearningSession"
+      (learningSessionStatus)=onLearningSessionStatus($event)
+      (learningSessionUpdated)=onLearningSessionUpdated($event)
+    >      
+    </app-learning-session-detail>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Learning Sessions</div> 
+    <table class="panel-body table table-striped" width="80%">
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th></th>
+      </tr>
+      <tbody>
+        <tr *ngFor="let learningSession of learningSessions">
+          <td>{{learningSession.name}}</td>
+          <td>{{learningSession.email}}</td>
+          <td>{{learningSession.phone}}</td>
+
+          <td>
+              <a (click)="editLearningSession(learningSession)">
+                  <i class="material-icons edit">edit</i>
+                </a>
+                <a (click)="deleteLearningSession(learningSession.id)">
+                  <i class="material-icons delete">clear</i>
+                </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <div class="no-learningSessions" *ngIf="learningSessions && learningSessions.length == 0">
+    <p>No LearningSessions Found!</p>
+  </div>
+</div>
+

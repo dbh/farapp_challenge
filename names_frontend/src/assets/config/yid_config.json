@@ -1,0 +1,7 @@
+{
+    "yid_api": {
+        "baseUrl": "http://localhost:3001",
+        "user": "admin",
+        "password": "x123"
+    }
+}
