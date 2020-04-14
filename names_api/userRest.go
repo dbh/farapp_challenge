@@ -322,3 +322,17 @@ func patchUser(w http.ResponseWriter, r *http.Request) {
 	log.Print(replaceResult)
 	respondwithJSON(w, http.StatusOK, modifiedUser)
 }
+
+func populateData(w http.ResponseWriter, r *http.Request) {
+	log.Println("populateData start")
+	defer log.Println("populateData end")
+	log.Println("Getting names")
+	// $$$ TODO Get the names from https://randomuser.me/api/
+	// for each name in the array "results"
+		// get the name via name object
+			// first
+			// last
+		// create a User with that name  first+last
+		// save object to collection
+	respondwithJSON(w, http.StatusOK, nil)
+}
