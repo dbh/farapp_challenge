@@ -7,6 +7,7 @@ Angular / Typescript
 
 ## Backend
 Go Lang 
+
 Go is not my language of most expertise, but I've been working in it recently
 
 ## Approach
