@@ -3,7 +3,6 @@ import { NgForm } from '@angular/forms';
 import { LearningSessionService } from '../LearningSession.service';
 
 import { LearningSession } from '../LearningSession' ;
-import { AuthService } from '../../auth/auth.service';
 import { json } from 'body-parser';
 
 // interface UserDetails {
@@ -25,11 +24,10 @@ export class LearningSessionComponent implements OnInit {
 
   profileJson: string = null;
 
-  constructor(private learningSessionService: LearningSessionService,) { }
+  constructor(private learningSessionService: LearningSessionService) { }
 
   ngOnInit(): void {
     this.getLearningSessions();
-  
   }
 
   log(x) {
@@ -41,6 +39,7 @@ export class LearningSessionComponent implements OnInit {
   getLearningSessions(): void {
     this.learningSessionService.getLearningSessions().subscribe((d) => {
       console.log(d);
+      console.log(JSON.stringify(d));
       this.learningSessions = d;
     });
   }
@@ -51,7 +50,7 @@ export class LearningSessionComponent implements OnInit {
       .subscribe((createLearningSession) => {
         learningSessionForm.reset();
         // this.getLearningSessions();
-        // TODO Decide what to do.  Get learning sessions isn't returning a learning session when it creates one
+        // TODO Decide what to do.  Get Users isn't returning a learning session when it creates one
         this.newLearningSession = new LearningSession();
         this.learningSessions.unshift(createLearningSession);
       });
@@ -64,12 +63,20 @@ export class LearningSessionComponent implements OnInit {
     });
   }
 
+  populateData(event): void {
+    console.log(`populate data button`);
+    this.learningSessionService.populateData()
+    .subscribe((x) => {
+      console.log(`did stuff with populate data`);
+      this.getLearningSessions();
+    });
+  }
+
   editLearningSession(learningSessionData: LearningSession): void {
     this.editing = true;
     Object.assign(this.editingLearningSession, learningSessionData);
 
     console.log('selected for edit ', learningSessionData);
-
   }
 
   onLearningSessionStatus(flag: boolean) {

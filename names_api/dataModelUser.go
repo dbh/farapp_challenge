@@ -14,22 +14,6 @@ type genericError struct {
 	Message string `json:"message"`
 }
 
-type swaggUserResp struct {
-	Body struct {
-		// HTTP status code 200 - Status OK
-		Code int  `json:"code"`
-		Data User `json:"user"`
-	} `json:"body"`
-}
-
-type swaggUsersResp struct {
-	Body struct {
-		// HTTP status code 200 - Status OK
-		Code int     `json:"code"`
-		Data []*User `json:"users"`
-	} `json:"body"`
-}
-
 type User struct {
 	Id    *primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	Name  string              `json:"name" bson:"name"`

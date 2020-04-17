@@ -27,3 +27,7 @@ Example get users
 curl -H "Content-Type: application/json" -H "Accept: application/json" -X GET http://localhost:3001/users 
 ```
 
+Trigger retrieval of random names and storing them in the data store
+```bash
+curl -H "Content-Type: application/json" -H "Accept: application/json" -X GET http://localhost:3001/users/populate_data 
+```

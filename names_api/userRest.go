@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -64,7 +65,6 @@ func dbGetUsers() ([]*User, error) {
 	return users, err
 }
 
-// swagger:operation getUser
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	log.Println("getUsers start")
 	defer log.Println("getUsers")
@@ -75,13 +75,8 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// respondwithJSON(w, http.StatusOK, users)
-	var resp swaggUsersResp
-	resp.Body.Code = http.StatusOK
-	resp.Body.Data = users
-
-	log.Print(resp)
-	respondwithJSON(w, resp.Body.Code, resp)
+	log.Println(users)
+	respondwithJSON(w, http.StatusOK, users)
 }
 
 func dbGetUser(userID string) (User, error) {
@@ -106,7 +101,6 @@ func dbGetUser(userID string) (User, error) {
 	return user, err
 }
 
-// swagger:operation getUser
 func getUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	user, err := dbGetUser(userID)
@@ -125,13 +119,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Print(user)
-
-	var resp swaggUserResp
-	resp.Body.Code = http.StatusOK
-	resp.Body.Data = user
-
-	log.Print(resp)
-	respondwithJSON(w, resp.Body.Code, resp)
+	respondwithJSON(w, http.StatusOK, user)
 }
 
 func dbDeleteUser(userID string) error {
@@ -156,7 +144,6 @@ func dbDeleteUser(userID string) error {
 	return err
 }
 
-// swagger:operation deleteUser
 func deleteUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	err := dbDeleteUser(userID)
@@ -176,7 +163,6 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	respondwithJSON(w, http.StatusNoContent, nil)
 }
 
-// swagger:operation createUser
 func createUser(w http.ResponseWriter, r *http.Request) {
 	var reqData User
 	if err := json.NewDecoder(r.Body).Decode(&reqData); err != nil {
@@ -185,7 +171,6 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Print("Deserialized into User: ", reqData)
-	// reqData.CreatedAt = time.Now()
 
 	vMsg := reqData.Validate()
 	if len(vMsg) != 0 {
@@ -231,7 +216,6 @@ func bsonFilter(userID string) bson.D {
 	}
 }
 
-// swagger:operation putUser
 func putUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	var putUserData User
@@ -261,7 +245,6 @@ func putUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// swagger:operation patchUser
 func patchUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	log.Print("patchUser ", userID)
@@ -323,16 +306,62 @@ func patchUser(w http.ResponseWriter, r *http.Request) {
 	respondwithJSON(w, http.StatusOK, modifiedUser)
 }
 
+type OuterData struct {
+	Results []PersonStruct `json:"results"`
+}
+type NameStruct struct {
+	First string `json:"first"`
+	Last  string `json:"last"`
+}
+type PersonStruct struct {
+	Gender string     `json:"gender"`
+	Name   NameStruct `json:"name"`
+}
+
 func populateData(w http.ResponseWriter, r *http.Request) {
 	log.Println("populateData start")
 	defer log.Println("populateData end")
 	log.Println("Getting names")
-	// $$$ TODO Get the names from https://randomuser.me/api/
-	// for each name in the array "results"
-		// get the name via name object
-			// first
-			// last
-		// create a User with that name  first+last
-		// save object to collection
-	respondwithJSON(w, http.StatusOK, nil)
+
+	//https://randomuser.me/api/
+	response, err := http.Get("https://randomuser.me/api/?results=100")
+	if err != nil {
+		log.Printf("get error %v", err)
+		respondwithJSON(w, http.StatusInternalServerError, nil)
+		return
+	}
+	data, _ := ioutil.ReadAll(response.Body)
+	log.Println(string(data))
+
+	var parsedData OuterData
+	json.Unmarshal([]byte(data), &parsedData)
+	log.Printf("len results: %v", len(parsedData.Results))
+
+	collection := db.mongoDatabase.Collection(config.MongoCollection)
+	if collection == nil {
+		respondWithGenericErr(w, http.StatusInternalServerError, nil)
+		return
+	}
+	for x, r := range parsedData.Results {
+		log.Printf("%v, %v %v", x, r.Name.First, r.Name.Last)
+
+		var user User
+		user.Name = fmt.Sprintf("%v %v", r.Name.First, r.Name.Last)
+
+		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+		res, err := collection.InsertOne(ctx, user)
+		log.Print("res ", res)
+		log.Print("err", err)
+		if err != nil {
+			log.Print("Failed to insert reqdata for user")
+			// w.WriteHeader(http.StatusInternalServerError)
+			respondWithGenericErr(w, http.StatusInternalServerError, err)
+			return
+		}
+		id := res.InsertedID
+		idStr := fmt.Sprintf("%v", id)
+		log.Print("created! ", idStr)
+	}
+
+	respondwithJSON(w, http.StatusCreated, nil)
 }

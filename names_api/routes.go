@@ -43,7 +43,7 @@ func setupUserRoutes() {
 		r.Put("/{userID}", putUser)
 		r.Patch("/{userID}", patchUser)
 		r.Delete("/{userID}", deleteUser)
-		r.Get("/populate_date", populateData)
+		r.Get("/populate_data", populateData)
 	})
 
 	// router.Route("/learning_sessions", func(r chi.Router) {

@@ -29,6 +29,17 @@ export class LearningSessionService {
     return this.http.get<LearningSession[]>(this.baseUrl + '/users/', httpOptions);
   }
 
+  populateData(): Observable<any> {
+    return this.http.get(this.baseUrl + '/users/populate_data')
+    .pipe(
+      tap(_ => this.log(`getting random user names and adding in backend`)),
+      catchError(err => {
+        this.log(`error getting/populating data`);
+        return throwError(err);
+      })
+    );
+  }
+
   createLearningSession(learningSessionData: LearningSession): Observable<LearningSession> {
     return this.http.post(this.baseUrl + '/users/', learningSessionData, httpOptions)
       .pipe(
