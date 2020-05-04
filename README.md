@@ -2,9 +2,10 @@
 Angular_Go_Mongo_CRUD
 
 
-
 ## Approach
-Data persistence mongo
+
+Angular/TypeScript -> APIs (Go) -> MongoDB
+
 
 ### Front-end in Angular
 Angular / Typescript
