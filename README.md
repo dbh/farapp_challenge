@@ -2,20 +2,16 @@
 Angular_Go_Mongo_CRUD
 
 
-## Front-End
-Angular / Typescript
-
-## Backend
-Go Lang 
-
-Go is not my language of most expertise, but I've been working in it recently
 
 ## Approach
 Data persistence mongo
 
-APIs in Go
+### Front-end in Angular
+Angular / Typescript
 
-Front-end in Angular
+### APIs in Go
+Go Lang 
+Go currently amuses me, so the backend is implemented in Go.
 
 Example create user via CURL/POST
 ```bash
