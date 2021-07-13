@@ -2,8 +2,6 @@ package main
 
 import (
 	"log"
-	// "time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -29,11 +27,5 @@ func (u *User) Validate() []string {
 	if u.Name == "" {
 		messages = append(messages, "Name is required")
 	}
-	// if u.Email == "" {
-	// 	messages = append(messages, "Email is required")
-	// }
-	// if u.Phone == "" {
-	// 	messages = append(messages, "Phone is required")
-	// }
 	return messages
 }
