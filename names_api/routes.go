@@ -27,8 +27,8 @@ func initRouter() {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	})
 	router.Use(cors.Handler)
-
 }
+
 func setupUserRoutes() {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("welcome<br>"))
@@ -45,20 +45,4 @@ func setupUserRoutes() {
 		r.Delete("/{userID}", deleteUser)
 		r.Get("/populate_data", populateData)
 	})
-
-	// router.Route("/learning_sessions", func(r chi.Router) {
-	// 	r.Get("/", getLearningSessions)
-	// 	r.Get("/{id}", getLearningSession)
-	// 	r.Delete("/{id}", deleteLearningSession)
-	// 	r.Post("/", createLearningSession)
-	// 	r.Put("/{id}", putLearningSession)
-	// })
-
-	// router.Route("/sefarim", func(r chi.Router) {
-	// 	r.Get("/", getSefarim)
-	// 	r.Get("/{id}", getSefer)
-	// 	r.Post("/", createSefer)
-	// 	r.Delete("/{id}", deleteSefer)
-	// 	r.Put("/{id}", putSefer)
-	// })
 }
