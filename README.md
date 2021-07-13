@@ -1,6 +1,10 @@
 # Angular_Go_Mongo_CRUD
 Angular_Go_Mongo_CRUD
 
+## Summary
+The idea is to provide a Web Front end and back-end API for users. The app must be able to populate it's users table from a random name generation service. 
+
+This was a time-constrained programming challenge, so I leverage bits of code that I already had sitting around. 
 
 ## Approach
 
@@ -29,3 +33,6 @@ Trigger retrieval of random names and storing them in the data store
 ```bash
 curl -H "Content-Type: application/json" -H "Accept: application/json" -X GET http://localhost:3001/users/populate_data 
 ```
+
+## Todo 
+The "learning-session" component in Angular needs to be renamed to relate to users, instead of the cloned code.
