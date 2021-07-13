@@ -18,7 +18,6 @@ type User struct {
 	Email string              `json:"email,omitempty" bson:"email,omitempty"`
 	Phone string              `json:"phone,omitempty" bson:"phone,omitempty"`
 }
-
 // add modified at?
 
 func (u *User) Validate() []string {
