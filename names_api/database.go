@@ -30,9 +30,6 @@ func (db *Db) init() error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err != nil {
-		log.Fatal(err)
-	}
 	log.Println("Connected")
 
 	db.mongoDatabase = db.mongoClient.Database(config.MongoDB)
